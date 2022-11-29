@@ -118,16 +118,43 @@ const checkUpdateTweet = async (req,res,next) =>
 
 const checkReplyTweet = (req,res,next) => 
 {
-    const user = req.user;
-    const tweetId = req.params.tweetId;
-    const content = req.body.content;
 
-    if(content?.length <= 1) {
-        res.status(400).send("Entrer un contenu valide.");
-        return;
+    //user answer to useranswer
+    try {
+        const user = req.user;
+        const tweetId = req.params.tweetId;
+        const contentAnswer = req.body.contentAnswer;
+
+        const tweet = Tweets.findOne({_id: tweetId})
+
+        if(contentAnswer?.length <= 1) {
+            res.status(400).send("Entrer un contenu valide.");
+            return;
+        }
+
+        if(contentAnswer?.length >= 280) {
+            res.status(400).send("Vous avez dépassé la limite de charactères");
+        }
+
+        if(contentAnswer === null) {
+            res.status(400).send("Entrer un contenu valide.");
+            return;
+        }
+
+        if( `${user._id}`=== `${tweet.user}`)
+        {
+            res.status(403).send("Vous ne pouvez pas répondre à votre propre sondage");
+            return;
+        }
+
+        next();
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).send("Erreur serveur");
     }
 
-    
+
 }
 
-module.exports = {checkCreateTweet, checkDeleteTweet, checkUpdateTweet};
+module.exports = {checkCreateTweet, checkDeleteTweet, checkUpdateTweet, checkReplyTweet};

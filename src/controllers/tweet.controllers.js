@@ -88,7 +88,13 @@ const getTweets = async (req, res) =>
 
 const replyTweet = (req,res) => 
 {
+    const user = req.user;
+    const tweetId = req.params.tweetId;
+    const contentAnswer = req.body.contentAnswer;
+
+
     
+
 }
 
-module.exports = {createTweets, deleteTweet, updateTweet, getTweets};
+module.exports = {createTweets, deleteTweet, updateTweet, getTweets, replyTweet};

@@ -13,7 +13,7 @@ const checkCreateTweet = (req, res, next) =>
         }
     
         if(content?.length >= 280) {
-            res.status(400).send("Vous avez dépassé la limite de charactères");
+            res.status(400).send("Vous avez dépassé la limite de caractères");
         }
     
         if(content === null) {
@@ -103,9 +103,6 @@ const checkUpdateTweet = async (req,res,next) =>
             return;
         }
 
-        console.log(user._id)
-        console.log(tweet.user)
-
         if(`${user._id}` !== `${tweet?.user}`)
         {
             res.status(403).send("Vous n'avez pas le droit de modifier ce tweet");
@@ -119,5 +116,18 @@ const checkUpdateTweet = async (req,res,next) =>
     }
 }
 
+const checkReplyTweet = (req,res,next) => 
+{
+    const user = req.user;
+    const tweetId = req.params.tweetId;
+    const content = req.body.content;
+
+    if(content?.length <= 1) {
+        res.status(400).send("Entrer un contenu valide.");
+        return;
+    }
+
+    
+}
 
 module.exports = {checkCreateTweet, checkDeleteTweet, checkUpdateTweet};

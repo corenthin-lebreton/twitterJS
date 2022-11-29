@@ -1,10 +1,21 @@
-
-const checkCreateUser = (req, res, next) => 
+const User = require('../schemas/UserSchema');
+const checkCreateUser = async (req, res, next) => 
 {
     try {
+        
         const username = req.body.username;
-        const avatar = req.file.path;
-        console.log(avatar)
+
+        const userExist = await User.exists({username: username})
+    
+            if(username === null || username === undefined) {
+                res.status(400).send("Problème.");
+                return;
+            }
+            if(userExist) {
+                res.status(400).send("Nom d'utilisateur déjà utilisé");
+                return;
+            }
+
         if(username?.length <= 1) {
             res.status(400).send("Entrer un nom utilisateur valide.");
             return;
@@ -24,10 +35,10 @@ const checkCreateUser = (req, res, next) =>
         }
 
         // check extension of avatar
+            const avatar = req.file.path;
             extensionFile = avatar.split('.');
-            console.log(extensionFile);
-            switch(extensionFile - 1)
-            {
+            switch(extensionFile[extensionFile.length - 1]) {
+            
                 case 'jpg':
                     break;
                 case 'jpeg':
@@ -51,6 +62,7 @@ const checkPatchValue = (req, res, next) =>
 {
     try {
         const newUsername = req.body.username;
+        console.log(newUsername);
 
         if(newUsername?.length <= 1) {
             res.status(400).send("Entrer un nom utilisateur valide.");
@@ -72,6 +84,7 @@ const checkPatchValue = (req, res, next) =>
 
         next();
     } catch (error) {
+        console.log(error);
         res.status(500).send("Erreur serveur");
     }
 }

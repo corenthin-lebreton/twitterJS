@@ -5,14 +5,9 @@ const createUserController = async (req, res) =>
 {
     try {
         const username = req.body.username;
-        const avatar = req.file.path;
-        console.log(avatar)
-        const userExist = await User.exists({username: username})
 
-        if(userExist) {
-            res.status(400).send("Nom d'utilisateur déjà utilisé");
-            return;
-        }
+        const avatar = req.file.path;
+
         if(avatar?.length === 0) {
         const newUser = new User();
         newUser.username = username;
@@ -40,25 +35,33 @@ const createUserController = async (req, res) =>
     }
 }
 
+const getUserController = async (req, res) => {
+    try {
+        const user = req.user;
+        res.status(200).json({username: user.username, avatar: user.avatar});
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Erreur serveur");
+    }
+}
+
+
 const patchUserController = async (req, res) => {
     try {
         const user = req.user;
         const newUsername = req.body.username;
-        const newAvatar = req.body.avatar;
         user.username = newUsername;
 
-        if(newAvatar?.length === 0){
-            user.avatar = user.avatar;
+        if(req.file){
+            user.avatar = req.file.path;
         }
-        else
-            {
-                user.avatar = newAvatar;
-            }
+        
         await user.save();
 
         res.status(200).send("Utilisateur modifié avec succès");
 
     } catch (error) {
+        console.log(error);
         res.status(500).send("Erreur serveur");
     }
 
@@ -73,4 +76,4 @@ const deleteUserController = async (req, res) => {
     res.status(200).send("Utilisateur supprimé avec succès");
 }
 
-module.exports = {createUserController, patchUserController, deleteUserController};
+module.exports = {createUserController, patchUserController, deleteUserController, getUserController};

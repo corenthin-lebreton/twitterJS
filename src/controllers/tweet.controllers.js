@@ -72,4 +72,23 @@ const updateTweet = async (req, res) =>
 
 }
 
-module.exports = {createTweets, deleteTweet, updateTweet};
+const getTweets = async (req, res) =>
+{
+    try {
+
+        const tweets = await Tweets.find().populate("user", "username").sort({createdAt: -1});
+        res.status(200).json(tweets);
+    }
+    catch(error)
+    {
+        console.log(error);
+        res.status(500).send("Erreur serveur");
+    }
+}
+
+const replyTweet = (req,res) => 
+{
+    
+}
+
+module.exports = {createTweets, deleteTweet, updateTweet, getTweets};

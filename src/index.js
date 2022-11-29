@@ -32,11 +32,13 @@ const controllersTweet = require('../src/controllers/tweet.controllers');
 const middleware = require('../src/Middlewares/auth.middleware');
 const dtoTweet = require('../src/dto/tweets.dto');
 const uploads = require('../src/Middlewares/upload.middleware');
+const multer = require('multer');
 const app = express();
 
 app.use(express.json());
 
-app.use('uploads',express.static('./uploads'));
+
+app.use('/uploads',express.static('./uploads'));
 
 const PORT = process.env.PORT || 3010;
 
@@ -52,11 +54,13 @@ app.listen(PORT, () => {
 
 //Création d'un utilisateur
 
-app.post('/register',dto.checkCreateUser,uploads.uploadImg,controllers.createUserController, );
+app.post('/register',uploads.uploadImg,dto.checkCreateUser,controllers.createUserController);
+
+app.get('/getUser/', middleware.isAuthentificated, controllers.getUserController)
 
 //modification d'un utilisateur
 
-app.patch('/updateUser/user/',middleware.isAuthentificated,dto.checkPatchValue,controllers.patchUserController);
+app.patch('/updateUser/user/',middleware.isAuthentificated,uploads.uploadImg,dto.checkPatchValue,controllers.patchUserController);
 
 //suppression d'un utilisateur
 
@@ -65,9 +69,18 @@ app.delete('/deleteUser/user/',middleware.isAuthentificated,controllers.deleteUs
 //Création d'un tweet
 app.post('/twitterIPSSI/',middleware.isAuthentificated,dtoTweet.checkCreateTweet,controllersTweet.createTweets);
 
+
+//Affichage tous les tweets
+
+app.get('/twitterIPSSI',middleware.isAuthentificated,controllersTweet.getTweets);
+
 //suppression d'un tweet
 app.delete('/deleteTweet/:tweetId',
 middleware.isAuthentificated,dtoTweet.checkDeleteTweet,controllersTweet.deleteTweet);
 
 //modification d'un tweet
 app.patch('/updateTweet/:tweetId',middleware.isAuthentificated,dtoTweet.checkUpdateTweet,controllersTweet.updateTweet);
+
+
+//répondre à un tweet
+app.post('/replyTweet/:tweetId',middleware.isAuthentificated,dtoTweet.checkReplyTweet,controllersTweet.replyTweet);

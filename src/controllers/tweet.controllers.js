@@ -1,4 +1,5 @@
 const Tweets = require('../schemas/tweetSchema');
+const useranswer = require('../schemas/usersAnswers')
 
 const createTweets = async (req, res) =>
 {
@@ -86,14 +87,25 @@ const getTweets = async (req, res) =>
     }
 }
 
-const replyTweet = (req,res) => 
+const replyTweet =  async (req,res) => 
 {
-    const user = req.user;
-    const tweetId = req.params.tweetId;
-    const contentAnswer = req.body.contentAnswer;
+   try {
+       const user = req.user;
+       const contentAnswer = req.body.contentAnswer;
 
-
+       const newAnswer = new useranswer();
+        newAnswer.contentAnswer = contentAnswer;
+        newAnswer.user = user._id;
     
+      await newAnswer.save();
+
+        res.status(200).send("Réponse envoyée avec succès");    
+    } 
+    catch (error) {
+        console.log(error);
+        res.status(500).send("Erreur serveur");
+    }
+  
 
 }
 

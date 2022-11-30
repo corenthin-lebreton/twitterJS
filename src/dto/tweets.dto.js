@@ -118,14 +118,13 @@ const checkUpdateTweet = async (req,res,next) =>
 
 const checkReplyTweet = async (req,res,next) => 
 {
-
     //user answer to useranswer
     try {
         const user = req.user;
         const tweetId = req.params.tweetId;
         const contentAnswer = req.body.contentAnswer;
-
-        const tweet = await Tweets.findOne({_id: tweetId})
+        console.log(tweetId)
+        const tweet = await Tweets.findById(tweetId)
     
         if(contentAnswer === null) {
             res.status(400).send("Entrer un contenu valide.");
@@ -135,7 +134,7 @@ const checkReplyTweet = async (req,res,next) =>
         console.log(user._id)
         console.log(tweet.user)
 
-        if( user._id === tweet.user)
+        if( `${user._id}` === `${tweet.user}`)
         {
             res.status(403).send("Vous ne pouvez pas répondre à votre propre sondage");
             return;

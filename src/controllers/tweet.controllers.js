@@ -105,8 +105,25 @@ const replyTweet =  async (req,res) =>
         console.log(error);
         res.status(500).send("Erreur serveur");
     }
-  
-
 }
 
-module.exports = {createTweets, deleteTweet, updateTweet, getTweets, replyTweet};
+const NumberUserAnswer =  async (req, res) => 
+{
+    try {
+        const user = req.user;
+        const tweetId = req.params.id;
+        const tweet = await Tweets.findById(tweetId);
+        const userAnswer = await useranswer.find({user:²});
+       if(useranswer.contentAnswer.includes(tweet.answers)){
+        console.log(OK)
+       }
+
+        res.status(200).json(userAnswer);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Erreur serveur");
+    }
+}
+
+module.exports = {createTweets, deleteTweet, updateTweet, getTweets, replyTweet, NumberUserAnswer};

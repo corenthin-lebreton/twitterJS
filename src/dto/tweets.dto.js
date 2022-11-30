@@ -73,7 +73,6 @@ const checkUpdateTweet = async (req,res,next) =>
         const newisSondage = req.body.isSondage;
         const newAnswers = req.body.answers;
 
-
         if(!tweet){
             res.status(404).send("Tweet introuvable");
             return;
@@ -153,4 +152,33 @@ const checkReplyTweet = async (req,res,next) =>
     }
 }
 
-module.exports = {checkCreateTweet, checkDeleteTweet, checkUpdateTweet, checkReplyTweet};
+const checkNumberUserAnswer = async (req, res, next) =>
+{
+    try {
+        const user = req.user;
+        const tweetId = req.params.id;
+        console.log(tweetId)
+        const tweet = await Tweets.findById(tweetId);
+        console.log(tweet._id)
+
+        if(!tweet._id)
+        {
+            res.status(404).send("Tweet introuvable");
+            return;
+        }
+
+        if(`${user._id}` !== `${tweet.user}`)
+        {
+            res.status(403).send("Vous ne pouvez pas voir les réponses d'un autre sondage !");
+            return;
+        }
+        next();
+
+    }catch(error)
+    {
+        console.log(error);
+        res.status(500).send("Erreur serveur");
+    }
+}
+
+module.exports = {checkCreateTweet, checkDeleteTweet, checkUpdateTweet, checkReplyTweet, checkNumberUserAnswer};

@@ -9,5 +9,6 @@ router.get('/twitterIPSSI',middleware.isAuthentificated,controllersTweet.getTwee
 router.delete('/deleteTweet/:tweetId',middleware.isAuthentificated,dtoTweet.checkDeleteTweet,controllersTweet.deleteTweet);
 router.patch('/updateTweet/:tweetId',middleware.isAuthentificated,dtoTweet.checkUpdateTweet,controllersTweet.updateTweet);
 router.post('/replyTweet/:tweetId', middleware.isAuthentificated,dtoTweet.checkReplyTweet,controllersTweet.replyTweet);
+router.get('/replyTweet/:id', middleware.isAuthentificated, dtoTweet.checkNumberUserAnswer, controllersTweet.NumberUserAnswer)
 
 module.exports = router

@@ -1,4 +1,5 @@
 const Tweets = require('../schemas/tweetSchema');
+const useranswer = require("../schemas/usersAnswers");
 
 const checkCreateTweet = (req, res, next) =>
 {
@@ -122,16 +123,23 @@ const checkReplyTweet = async (req,res,next) =>
         const user = req.user;
         const tweetId = req.params.tweetId;
         const contentAnswer = req.body.contentAnswer;
-        console.log(tweetId)
+        
         const tweet = await Tweets.findById(tweetId)
     
+        //vérifier si un utilisateur a déjà répondu
+        const userAnswer = await useranswer.findOne({user: user._id, tweets: tweet._id});
+        if(userAnswer){
+            res.status(403).send("Vous avez déjà répondu à ce sondage");
+            return;
+        }
+
+
+
+
         if(contentAnswer === null) {
             res.status(400).send("Entrer un contenu valide.");
             return;
         }
-
-        console.log(user._id)
-        console.log(tweet.user)
 
         if( `${user._id}` === `${tweet.user}`)
         {
@@ -144,6 +152,7 @@ const checkReplyTweet = async (req,res,next) =>
             return;
         }
 
+
         next();
     }
     catch(error){
@@ -155,11 +164,10 @@ const checkReplyTweet = async (req,res,next) =>
 const checkNumberUserAnswer = async (req, res, next) =>
 {
     try {
-        const user = req.user;
         const tweetId = req.params.id;
-        console.log(tweetId)
         const tweet = await Tweets.findById(tweetId);
-        console.log(tweet._id)
+        const userAnswer = await useranswer.find({ tweets: tweet._id });
+
 
         if(!tweet._id)
         {
@@ -167,11 +175,11 @@ const checkNumberUserAnswer = async (req, res, next) =>
             return;
         }
 
-        if(`${user._id}` !== `${tweet.user}`)
-        {
-            res.status(403).send("Vous ne pouvez pas voir les réponses d'un autre sondage !");
+        if(userAnswer.length === 0){
+            res.status(404).send("Aucune réponse");
             return;
         }
+
         next();
 
     }catch(error)

@@ -6,7 +6,10 @@ const schema = new Schema ({
         type: Schema.Types.ObjectId,
         ref: "User",
     },
-   
+   tweets: {
+        type: Schema.Types.ObjectId,
+        ref: "Tweets",
+   },
     createdAt: {
         type: Date,
         default: Date.now,

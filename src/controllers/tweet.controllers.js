@@ -104,7 +104,7 @@ const NumberUserAnswer = async (req, res) => {
     const userAnswer = await useranswer.find({ tweets: tweet._id });
 
     console.log(userAnswer);
-    
+
     // const response = Array.from(
     //   new Set(userAnswer.map((v) => v.contentAnswer))
     // ).map((a) => ({

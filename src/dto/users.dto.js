@@ -6,7 +6,7 @@ const checkCreateUser = async (req, res, next) => {
     const userExist = await User.exists({ username: username });
 
     if (username === null || username === undefined) {
-      res.status(400).send("Problème.");
+      res.status(400).send("Entrer un nom utilisateur valide.");
       return;
     }
     if (userExist) {
@@ -14,8 +14,13 @@ const checkCreateUser = async (req, res, next) => {
       return;
     }
 
-    if (username?.length <= 1) {
+    if (username?.length <= 0) {
       res.status(400).send("Entrer un nom utilisateur valide.");
+      return;
+    }
+
+    if (username?.length < 2) {
+      res.status(400).send("Entrer un nom utilisateur plus grand.");
       return;
     }
 
@@ -24,10 +29,6 @@ const checkCreateUser = async (req, res, next) => {
     }
 
     if (typeof username !== "string") {
-      res.status(400).send("Entrer un nom utilisateur valide.");
-      return;
-    }
-    if (username === null) {
       res.status(400).send("Entrer un nom utilisateur valide.");
       return;
     }
@@ -59,8 +60,13 @@ const checkPatchValue = (req, res, next) => {
     const newUsername = req.body.username;
     console.log(newUsername);
 
-    if (newUsername?.length <= 1) {
+    if (username?.length <= 0) {
       res.status(400).send("Entrer un nom utilisateur valide.");
+      return;
+    }
+
+    if (username?.length < 2) {
+      res.status(400).send("Entrer un nom utilisateur plus grand.");
       return;
     }
 

@@ -1,12 +1,12 @@
 # twitterJS
 
 
-#Installation of the project :
+# Installation of the project :
 
 if you want to try it, you have to open it and use the npm install command.
 
 - run npm run dev and open POSTMAN
 
-#Next thing
+# Next idea :
 
 - Development of the frontend interface in ReactJS

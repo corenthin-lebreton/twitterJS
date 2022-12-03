@@ -26,13 +26,28 @@ const checkCreateTweet = (req, res, next) => {
       return;
     }
 
-    if (isSondage === true && answers.length === 0) {
+    if (isSondage === true && answers?.length == 0) {
       res.status(400).send("Entrer des réponses au sondage.");
       return;
     }
+
+    if (isSondage === true && answers?.length == null) {
+      res.status(400).send("Entrer des réponses au sondage.");
+      return;
+    }
+
+    if (answers.length < 2) {
+      res.status(400).send("Entrer au moins 2 réponses au sondage.");
+      return;
+    }
+
+    if (answers.length > 5) {
+      res.status(400).send("Entrer au plus 5 réponses au sondage.");
+      return;
+    }
+
     next();
   } catch (error) {
-    console.log(error);
     res.status(500).send("Erreur serveur");
   }
 };
@@ -55,7 +70,6 @@ const checkDeleteTweet = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
     res.status(500).send("Erreur serveur");
   }
 };
@@ -93,7 +107,12 @@ const checkUpdateTweet = async (req, res, next) => {
       return;
     }
 
-    if (newisSondage === true && newAnswers.length === 0) {
+    if (newisSondage === true && newAnswers?.length == 0) {
+      res.status(400).send("Entrer des réponses au sondage.");
+      return;
+    }
+
+    if (newisSondage === true && newAnswers?.length == null) {
       res.status(400).send("Entrer des réponses au sondage.");
       return;
     }
@@ -102,15 +121,24 @@ const checkUpdateTweet = async (req, res, next) => {
       res.status(403).send("Vous n'avez pas le droit de modifier ce tweet");
       return;
     }
+
+    if (newAnswers.length < 2) {
+      res.status(400).send("Entrer au moins 2 réponses au sondage.");
+      return;
+    }
+
+    if (newAnswers.length > 5) {
+      res.status(400).send("Entrer au plus 5 réponses au sondage.");
+      return;
+    }
+
     next();
   } catch (error) {
-    console.log(error);
     res.status(500).send("Erreur serveur");
   }
 };
 
 const checkReplyTweet = async (req, res, next) => {
-  //user answer to useranswer
   try {
     const user = req.user;
     const tweetId = req.params.tweetId;
@@ -147,7 +175,6 @@ const checkReplyTweet = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
     res.status(500).send("Erreur serveur");
   }
 };
@@ -156,12 +183,12 @@ const checkNumberUserAnswer = async (req, res, next) => {
   try {
     const tweetId = req.params.id;
     const tweet = await Tweets.findById(tweetId);
-    const userAnswer = await useranswer.find({ tweets: tweet._id });
 
-    if (!tweet._id) {
+    if (!tweet) {
       res.status(404).send("Tweet introuvable");
       return;
     }
+    const userAnswer = await useranswer.find({ tweets: tweet._id });
 
     if (userAnswer.length === 0) {
       res.status(404).send("Aucune réponse");
@@ -170,7 +197,6 @@ const checkNumberUserAnswer = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
     res.status(500).send("Erreur serveur");
   }
 };

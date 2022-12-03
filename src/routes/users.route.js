@@ -12,20 +12,22 @@ router.post(
   dto.checkCreateUser,
   controllers.createUserController
 );
+
+router.get("/login", dto.checkLoginUser, controllers.loginUser);
 router.get(
   "/getUser/",
   middleware.isAuthentificated,
   controllers.getUserController
 );
 router.patch(
-  "/updateUser/user/",
+  "/updateUser/",
   middleware.isAuthentificated,
   uploads.uploadImg,
   dto.checkPatchValue,
   controllers.patchUserController
 );
 router.delete(
-  "/deleteUser/user/",
+  "/deleteUser/",
   middleware.isAuthentificated,
   controllers.deleteUserController
 );
